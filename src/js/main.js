@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		  tabsContent = document.querySelectorAll('.tabcontent'),
 		  tabsParent = document.querySelector('.tabheader__items');
 
+	// Function to hide <div class="tabcontent"> and <div class="tabheader__item">
 	function hideTabContent () {
 		tabsContent.forEach(item => {
 			item.classList.add('hide');
@@ -16,8 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			item.classList.remove('tabheader__item_active');
 		});
 	}	
-
-	function showTabContent (i = 0	) {
+	// Function to show <div class="tabcontent"> and <div class="tabheader__item"> by it's index
+	function showTabContent (i = 0) {
 		tabsContent[i].classList.add('show', 'fade');
 		tabsContent[i].classList.remove('hide');
 		tabs[i].classList.add('tabheader__item_active');
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	hideTabContent();
 	showTabContent();
 
+	//Delegated eventListener for <div class="tabheader__item"> to show choosen one tab and tabcontent
 	tabsParent.addEventListener('click', (e) => {
 		const target = e.target;
 
