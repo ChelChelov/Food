@@ -110,13 +110,16 @@ document.addEventListener('DOMContentLoaded', () => {
 	const modalTrigger = document.querySelectorAll('[data-modal]'),
 		  modalWindow = document.querySelector('.modal'),
 		  modalClose = document.querySelector('[data-close]');
+	
+	function openModal() {
+		modalWindow.classList.add('show');
+		modalWindow.classList.remove('hide');
+		document.body.style.overflow = 'hidden'; //it'll fixate all the document; user can't scroll the page
+		clearInterval(modalTimerId);
+	}
 
 	modalTrigger.forEach(trigger => {
-		trigger.addEventListener('click', () => {
-			modalWindow.classList.add('show');
-			modalWindow.classList.remove('hide');
-			document.body.style.overflow = 'hidden';
-		});
+		trigger.addEventListener('click', openModal);
 	});
 
 	function closeModal() {
@@ -138,4 +141,15 @@ document.addEventListener('DOMContentLoaded', () => {
 			closeModal();
 		}
 	});
+
+	const modalTimerId = setTimeout(openModal, 15000);
+
+	function showModalByScroll() {
+		if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
+			openModal();
+			window.removeEventListener('scroll', showModalByScroll);
+		}
+	}
+
+	window.addEventListener('scroll', showModalByScroll);
 });
