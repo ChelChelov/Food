@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	//Timer
 
-	const deadLine = '2024-05-21';
+	const deadLine = '2024-06-21';
 
 	function getTimeRemaining(endtime) {
 		let days, hours, minutes, seconds;
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	});
 
-	// const modalTimerId = setTimeout(openModal, 15000);
+	const modalTimerId = setTimeout(openModal, 5000);
 
 	function showModalByScroll() {
 		if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
@@ -222,4 +222,55 @@ document.addEventListener('DOMContentLoaded', () => {
 		12,
 		'.menu__field .container'
 	).render();
+
+	//Forms
+
+	const forms = document.querySelectorAll('form');
+
+	const message = {
+		loading: 'Loading',
+		success: 'Thanks! We will contact with you soon!',
+		failure: 'Oops... Something went wrong!'  
+	};
+
+	forms.forEach(form => postData(form));
+
+	function postData(form) {
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+
+			const statusMessage = document.createElement('div');
+			statusMessage.classList.add('status');
+			statusMessage.textContent = message.loading;
+			form.append(statusMessage); 
+
+			const request = new XMLHttpRequest();
+			request.open('POST', 'server.php');
+
+			request.setRequestHeader('Content-type', 'application/json')
+			const formData = new FormData(form);
+
+			const obj = {};
+			formData.forEach(function(value, key) {
+				obj[key] = value;
+			});
+
+			const json = JSON.stringify(obj);
+
+			request.send(json);
+
+			request.addEventListener('load', () => {
+				if (request.status === 200) {
+					console.log(request.response);
+					statusMessage.textContent = message.success;
+					form.reset();
+					setTimeout(() => {
+						statusMessage.remove();
+					}, 2000);
+				} else {
+					statusMessage.textContent = message.failure;
+				}
+			});
+		});
+	}
 });
