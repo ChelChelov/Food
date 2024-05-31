@@ -246,19 +246,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			const formData = new FormData(form);
 
-			// const obj = {};
-			// formData.forEach(function(value, key) {
-			// 	obj[key] = value;
-			// });
-
-			// const json = JSON.stringify(obj);
+			const obj = {};
+			formData.forEach(function(value, key) {
+				obj[key] = value;
+			});
 
 			fetch('server.php', {
 				method: "POST",
-				// headers: {
-				// 	'Content-type': 'application/json'
-				// },
-				body: formData
+				headers: {
+					'Content-type': 'application/json'
+				},
+				body: JSON.stringify(obj)
 			}).then(data => {
 				console.log(data);
 				showThanksModal(message.success);
