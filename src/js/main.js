@@ -1,5 +1,7 @@
 'use strict';
 
+const { data } = require("autoprefixer");
+
 document.addEventListener('DOMContentLoaded', () => {
 
 	//Tabs
@@ -292,4 +294,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			closeModal();
 		}, 4000);
 	}
+
+	fetch('http://localhost:3000/menu')
+	.then(data => data.json())
+	.then(res => console.log(res));
 });
