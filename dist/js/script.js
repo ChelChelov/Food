@@ -17716,7 +17716,7 @@ document.addEventListener('DOMContentLoaded', () => {
       closeModal();
     }
   });
-  const modalTimerId = setTimeout(openModal, 50000);
+  const modalTimerId = setTimeout(openModal, 15000);
   function showModalByScroll() {
     if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
       openModal();
@@ -17775,8 +17775,20 @@ document.addEventListener('DOMContentLoaded', () => {
     success: 'Thanks! We will contact with you soon!',
     failure: 'Oops... Something went wrong!'
   };
-  forms.forEach(form => postData(form));
-  function postData(form) {
+  forms.forEach(form => bindPostData(form));
+
+  //Function to connecting to the server
+  const postData = async (url, data) => {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: data
+    });
+    return await res.json();
+  };
+  function bindPostData(form) {
     form.addEventListener('submit', e => {
       e.preventDefault();
       const statusMessage = document.createElement('img');
@@ -17787,17 +17799,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			`;
       form.insertAdjacentElement('afterend', statusMessage);
       const formData = new FormData(form);
-      const obj = {};
-      formData.forEach(function (value, key) {
-        obj[key] = value;
-      });
-      fetch('server.php', {
-        method: "POST",
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify(obj)
-      }).then(data => {
+      const json = JSON.stringify(Object.fromEntries(formData.entries()));
+      postData('http://localhost:3000/requests', json).then(data => {
         console.log(data);
         showThanksModal(message.success);
         statusMessage.remove();
@@ -17828,7 +17831,10 @@ document.addEventListener('DOMContentLoaded', () => {
       closeModal();
     }, 4000);
   }
-  fetch('http://localhost:3000/menu').then(data => data.json()).then(res => console.log(res));
+
+  // fetch('http://localhost:3000/menu')
+  // .then(data => data.json())
+  // .then(res => console.log(res));
 });
 })();
 

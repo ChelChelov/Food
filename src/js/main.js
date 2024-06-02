@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	});
 
-	const modalTimerId = setTimeout(openModal, 50000);
+	const modalTimerId = setTimeout(openModal, 15000);
 
 	function showModalByScroll() {
 		if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
@@ -195,32 +195,24 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
-	new MenuItem(
-		"img/tabs/vegy.jpg",
-		"vegy",
-		'Меню "Фитнес"',
-		'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-		9,
-		'.menu__field .container'
-	).render();
+	//Function to getting data from db
+	const getResource = async url => {
+		const res = await fetch(url);
 
-	new MenuItem(
-		"img/tabs/elite.jpg",
-		"elite",
-		'Меню “Премиум”',
-		'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-		15,
-		'.menu__field .container'
-	).render();
+		if (!res.ok) {
+			throw new Error(`Could not fetch ${url}, status ${res.status}`);
+		}
 
-	new MenuItem(
-		"img/tabs/post.jpg",
-		"post",
-		'Меню "Постное"',
-		'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-		12,
-		'.menu__field .container'
-	).render();
+		return await res.json();
+	};
+
+	//Then-method to rendering cards into the index.html
+	getResource('http://localhost:3000/menu')
+		.then(data => {
+			data.forEach(({img, altimg, title, descr, price}) => {
+				new MenuItem(img, altimg, title, descr, price, '.menu__field .container').render()
+			});
+		});
 
 	//Forms
 
@@ -232,9 +224,23 @@ document.addEventListener('DOMContentLoaded', () => {
 		failure: 'Oops... Something went wrong!'  
 	};
 
-	forms.forEach(form => postData(form));
+	forms.forEach(form => bindPostData(form));
 
-	function postData(form) {
+	//Function to connecting to the server
+	const postData = async (url, data) => {
+		const res = await fetch(url, {
+			method: "POST",
+			headers: {
+				'Content-type': 'application/json'
+			},
+			body: data
+		});
+
+		return await res.json();
+	};
+
+	//Function to post data to db using forms
+	function bindPostData(form) {
 		form.addEventListener('submit', (e) => {
 			e.preventDefault();
 
@@ -248,18 +254,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			const formData = new FormData(form);
 
-			const obj = {};
-			formData.forEach(function(value, key) {
-				obj[key] = value;
-			});
+			const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
-			fetch('server.php', {
-				method: "POST",
-				headers: {
-					'Content-type': 'application/json'
-				},
-				body: JSON.stringify(obj)
-			}).then(data => {
+			postData('http://localhost:3000/requests', json)
+			.then(data => {
 				console.log(data);
 				showThanksModal(message.success);
 				statusMessage.remove();
@@ -295,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}, 4000);
 	}
 
-	fetch('http://localhost:3000/menu')
-	.then(data => data.json())
-	.then(res => console.log(res));
+	// fetch('http://localhost:3000/menu')
+	// .then(data => data.json())
+	// .then(res => console.log(res));
 });
