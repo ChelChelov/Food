@@ -293,7 +293,45 @@ document.addEventListener('DOMContentLoaded', () => {
 		}, 4000);
 	}
 
-	// fetch('http://localhost:3000/menu')
-	// .then(data => data.json())
-	// .then(res => console.log(res));
+	//Slider
+
+	const slides = document.querySelectorAll('.offer__slide'),
+		  prev = document.querySelector('.offer__slider-prev'),
+		  next = document.querySelector('.offer__slider-next'),
+		  total = document.querySelector('#total'),
+		  current = document.querySelector('#current');
+	let slideIndex = 1;
+
+	showSlides(slideIndex);
+
+	total.innerHTML = getZero(slides.length);
+	current.innerHTML = getZero(slideIndex);
+
+	function showSlides(num) {
+		if (num > slides.length) {
+			slideIndex = 1;
+		}
+
+		if (num < 1) {
+			slideIndex = slides.length;
+		}
+
+		slides.forEach(item => item.style.display = 'none');
+
+		slides[slideIndex - 1].style.display = 'block';
+
+		current.innerHTML = getZero(slideIndex);
+	}
+
+	function plusSlides(num) {	
+		showSlides(slideIndex += num); // in scopes slideIndes is rewriting (if slideIndex = 1 and num = 1 => slideIndex =)
+	}
+
+	prev.addEventListener('click', () => {
+		plusSlides(-1);
+	});
+
+	next.addEventListener('click', () => {
+		plusSlides(1);
+	});
 });

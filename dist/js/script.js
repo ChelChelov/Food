@@ -17763,9 +17763,28 @@ document.addEventListener('DOMContentLoaded', () => {
       this.parent.append(item);
     }
   }
-  new MenuItem("img/tabs/vegy.jpg", "vegy", 'Меню "Фитнес"', 'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!', 9, '.menu__field .container').render();
-  new MenuItem("img/tabs/elite.jpg", "elite", 'Меню “Премиум”', 'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!', 15, '.menu__field .container').render();
-  new MenuItem("img/tabs/post.jpg", "post", 'Меню "Постное"', 'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.', 12, '.menu__field .container').render();
+
+  //Function to getting data from db
+  const getResource = async url => {
+    const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error(`Could not fetch ${url}, status ${res.status}`);
+    }
+    return await res.json();
+  };
+
+  //Then-method to rendering cards into the index.html
+  getResource('http://localhost:3000/menu').then(data => {
+    data.forEach(({
+      img,
+      altimg,
+      title,
+      descr,
+      price
+    }) => {
+      new MenuItem(img, altimg, title, descr, price, '.menu__field .container').render();
+    });
+  });
 
   //Forms
 
@@ -17788,6 +17807,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     return await res.json();
   };
+
+  //Function to post data to db using forms
   function bindPostData(form) {
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -17832,9 +17853,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4000);
   }
 
-  // fetch('http://localhost:3000/menu')
-  // .then(data => data.json())
-  // .then(res => console.log(res));
+  //Slider
+
+  const slides = document.querySelectorAll('.offer__slide'),
+    prev = document.querySelector('.offer__slider-prev'),
+    next = document.querySelector('.offer__slider-next'),
+    total = document.querySelector('#total'),
+    current = document.querySelector('#current');
+  let slideIndex = 1;
+  showSlides(slideIndex);
+  total.innerHTML = getZero(slides.length);
+  current.innerHTML = getZero(slideIndex);
+  function showSlides(num) {
+    if (num > slides.length) {
+      slideIndex = 1;
+    }
+    if (num < 1) {
+      slideIndex = slides.length;
+    }
+    slides.forEach(item => item.style.display = 'none');
+    slides[slideIndex - 1].style.display = 'block';
+    current.innerHTML = getZero(slideIndex);
+  }
+  function plusSlides(num) {
+    showSlides(slideIndex += num); // in scopes slideIndes is rewriting (if slideIndex = 1 and num = 1 => slideIndex =)
+  }
+  prev.addEventListener('click', () => {
+    plusSlides(-1);
+  });
+  next.addEventListener('click', () => {
+    plusSlides(1);
+  });
 });
 })();
 
