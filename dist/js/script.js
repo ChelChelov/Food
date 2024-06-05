@@ -17859,30 +17859,46 @@ document.addEventListener('DOMContentLoaded', () => {
     prev = document.querySelector('.offer__slider-prev'),
     next = document.querySelector('.offer__slider-next'),
     total = document.querySelector('#total'),
-    current = document.querySelector('#current');
+    current = document.querySelector('#current'),
+    slidesWrapper = document.querySelector('.offer__slider-wrapper'),
+    slidesField = document.querySelector('.offer__slider-inner'),
+    width = window.getComputedStyle(slidesWrapper).width;
   let slideIndex = 1;
-  showSlides(slideIndex);
+  let offset = 0;
   total.innerHTML = getZero(slides.length);
   current.innerHTML = getZero(slideIndex);
-  function showSlides(num) {
-    if (num > slides.length) {
-      slideIndex = 1;
-    }
-    if (num < 1) {
-      slideIndex = slides.length;
-    }
-    slides.forEach(item => item.style.display = 'none');
-    slides[slideIndex - 1].style.display = 'block';
-    current.innerHTML = getZero(slideIndex);
-  }
-  function plusSlides(num) {
-    showSlides(slideIndex += num); // in scopes slideIndes is rewriting (if slideIndex = 1 and num = 1 => slideIndex =)
-  }
-  prev.addEventListener('click', () => {
-    plusSlides(-1);
-  });
+  slidesField.style.width = 100 * slides.length + '%';
+  slidesField.style.display = 'flex';
+  slidesField.style.transition = '0.5s all';
+  slidesWrapper.style.overflow = 'hidden';
+  slides.forEach(slide => slide.style.width = width);
   next.addEventListener('click', () => {
-    plusSlides(1);
+    if (offset == parseFloat(width) * (slides.length - 1)) {
+      offset = 0;
+    } else {
+      offset += parseFloat(width);
+    }
+    slidesField.style.transform = `translateX(-${offset}px)`;
+    if (slideIndex == slides.length) {
+      slideIndex = 1;
+    } else {
+      slideIndex++;
+    }
+    current.innerHTML = getZero(slideIndex);
+  });
+  prev.addEventListener('click', () => {
+    if (offset == 0) {
+      offset = parseFloat(width) * (slides.length - 1);
+    } else {
+      offset -= parseFloat(width);
+    }
+    slidesField.style.transform = `translateX(-${offset}px)`;
+    if (slideIndex == 1) {
+      slideIndex = slides.length;
+    } else {
+      slideIndex--;
+    }
+    current.innerHTML = getZero(slideIndex);
   });
 });
 })();
