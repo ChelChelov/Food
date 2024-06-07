@@ -17856,6 +17856,7 @@ document.addEventListener('DOMContentLoaded', () => {
   //Slider
 
   const slides = document.querySelectorAll('.offer__slide'),
+    slider = document.querySelector('.offer__slider'),
     prev = document.querySelector('.offer__slider-prev'),
     next = document.querySelector('.offer__slider-next'),
     total = document.querySelector('#total'),
@@ -17872,6 +17873,25 @@ document.addEventListener('DOMContentLoaded', () => {
   slidesField.style.transition = '0.5s all';
   slidesWrapper.style.overflow = 'hidden';
   slides.forEach(slide => slide.style.width = width);
+  slider.style.position = 'relative';
+  const indicators = document.createElement('ol'),
+    dots = [];
+  indicators.classList.add('carousel-indicators');
+  slider.append(indicators);
+  for (let i = 0; i < slides.length; i++) {
+    const dot = document.createElement('li');
+    dot.setAttribute('data-slide-to', i + 1);
+    dot.classList.add('dot');
+    if (i == 0) {
+      dot.style.opacity = 1;
+    }
+    indicators.append(dot);
+    dots.push(dot);
+  }
+  function displayTargetDot(dotsArr) {
+    dotsArr.forEach(dot => dot.style.opacity = '.5');
+    dotsArr[slideIndex - 1].style.opacity = '1';
+  }
   next.addEventListener('click', () => {
     if (offset == parseFloat(width) * (slides.length - 1)) {
       offset = 0;
@@ -17885,6 +17905,7 @@ document.addEventListener('DOMContentLoaded', () => {
       slideIndex++;
     }
     current.innerHTML = getZero(slideIndex);
+    displayTargetDot(dots);
   });
   prev.addEventListener('click', () => {
     if (offset == 0) {
@@ -17899,6 +17920,17 @@ document.addEventListener('DOMContentLoaded', () => {
       slideIndex--;
     }
     current.innerHTML = getZero(slideIndex);
+    displayTargetDot(dots);
+  });
+  dots.forEach(dot => {
+    dot.addEventListener('click', e => {
+      const slideTo = e.target.getAttribute('data-slide-to');
+      slideIndex = slideTo;
+      offset = parseFloat(width) * (slideTo - 1);
+      slidesField.style.transform = `translateX(-${offset}px)`;
+      current.innerHTML = getZero(slideIndex);
+      displayTargetDot(dots);
+    });
   });
 });
 })();
