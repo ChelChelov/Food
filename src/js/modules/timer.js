@@ -1,5 +1,13 @@
 'use strict';
 
+function getZero(num) {
+	if (num >= 0 && num < 10) {
+		return `0${num}`;
+	} else {
+		return num;
+	}
+}
+
 function timer() {
 	//Timer
 
@@ -30,14 +38,6 @@ function timer() {
 		};
 	}
 
-	function getZero(num) {
-		if (num >= 0 && num < 10) {
-			return `0${num}`;
-		} else {
-			return num;
-		}
-	}
-
 	function setClock(selector, endtime) {
 		const timer = document.querySelector(selector),
 				days = timer.querySelector('#days'),
@@ -65,4 +65,5 @@ function timer() {
 	setClock('.timer', deadLine);	
 }
 
-module.exports = timer;
+export default timer;
+export {getZero}
