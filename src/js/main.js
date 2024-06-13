@@ -32,3 +32,5 @@ document.addEventListener('DOMContentLoaded', () => {
 		wrapper: '.offer__slider-wrapper'
 	});
 });
+
+//Test message
