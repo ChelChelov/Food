@@ -1,7 +1,6 @@
 'use strict';
 
 function calculator() {
-	//Calculator
 
 	const result = document.querySelector('.calculating__result span');
 	let sex, height, weight, age, ratio;

@@ -1,5 +1,7 @@
 'use strict';
 
+import { getResource } from "../services/services";
+
 function cards() {
 	//Menu-item class for cards
 
@@ -43,17 +45,6 @@ function cards() {
 			this.parent.append(item);
 		}
 	}
-
-	//Function to getting data from db
-	const getResource = async url => {
-		const res = await fetch(url);
-
-		if (!res.ok) {
-			throw new Error(`Could not fetch ${url}, status ${res.status}`);
-		}
-
-		return await res.json();
-	};
 
 	//Then-method to rendering cards into the index.html
 	getResource('http://localhost:3000/menu')

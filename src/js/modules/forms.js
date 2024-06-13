@@ -1,9 +1,11 @@
 'use strict';
 
-function forms() {
-	//Forms
+import { openModal, closeModal } from "./modal";
+import { postData } from "../services/services";
 
-	const forms = document.querySelectorAll('form');
+function forms(formSelector, modalTimerId) {
+
+	const forms = document.querySelectorAll(formSelector);
 
 	const message = {
 		loading: 'img/form/spinner.svg',
@@ -12,19 +14,6 @@ function forms() {
 	};
 
 	forms.forEach(form => bindPostData(form));
-
-	//Function to connecting to the server
-	const postData = async (url, data) => {
-		const res = await fetch(url, {
-			method: "POST",
-			headers: {
-				'Content-type': 'application/json'
-			},
-			body: data
-		});
-
-		return await res.json();
-	};
 
 	//Function to post data to db using forms
 	function bindPostData(form) {
@@ -60,7 +49,7 @@ function forms() {
 		const prevModalDialog = document.querySelector('.modal__dialog');
 
 		prevModalDialog.classList.add('hide');
-		openModal();
+		openModal('.modal', modalTimerId);
 
 		const thanksModalWrapper = document.createElement('div');
 		thanksModalWrapper.classList.add('modal__dialog');
@@ -76,7 +65,7 @@ function forms() {
 			thanksModalWrapper.remove();
 			prevModalDialog.classList.add('show');
 			prevModalDialog.classList.remove('hide');
-			closeModal();
+			closeModal('.modal');
 		}, 4000);
 	}
 }

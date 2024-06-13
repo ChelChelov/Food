@@ -8,10 +8,7 @@ function getZero(num) {
 	}
 }
 
-function timer() {
-	//Timer
-
-	const deadLine = '2024-06-21';
+function timer(id, deadLine) {
 
 	function getTimeRemaining(endtime) {
 		let days, hours, minutes, seconds;
@@ -62,7 +59,7 @@ function timer() {
 		}
 	}
 
-	setClock('.timer', deadLine);	
+	setClock(id, deadLine);	
 }
 
 export default timer;
